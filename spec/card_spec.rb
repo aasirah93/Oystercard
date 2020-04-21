@@ -6,15 +6,16 @@ describe Card do
     expect(new_card.balance).to equal(0)
   end
 
-  it 'user cant top up with negative number' do
-    expect{new_card.top_up(-5)}.to raise_error("Enter positive number")
-  end
 
-  it 'user cant top up with non-number' do
-    expect{new_card.top_up("hi").to raise_error("Enter a number")}
-  end
+  it 'raises an error if the maximum balance is exceeded' do
+   maximum_balance = Card::MAXIMUM_BALANCE
+   subject.top_up(maximum_balance)
+   expect{ subject.top_up 1 }.to raise_error 'Maximum balance exceeded'
+ end
 
-  it 'topping up by £10 incr balance by £10' do
-    expect{new_card.top_up(10)}.to change {new_card.balance}.by(10)
-  end
-end
+  #it { is_expected.to respond_to(:deduct).with(1).argument }
+    it 'expects money to be taken off of the oystercard' do
+      subject.top_up(10)
+      expect{ subject.deduct(5) }.to change{subject.balance}.by -5
+    end
+ end
